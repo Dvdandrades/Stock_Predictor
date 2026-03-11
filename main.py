@@ -1,6 +1,7 @@
-def main():
-    print("Hello from stock-price-predictor!")
+from fastapi import FastAPI
 
+from stock_predictor.user import router as user_router
 
-if __name__ == "__main__":
-    main()
+app = FastAPI()
+
+app.include_router(user_router.router, prefix="/user", tags=["user"])
