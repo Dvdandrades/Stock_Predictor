@@ -22,3 +22,13 @@ def authenticate_user(db: Session, user: schemas.UserLogin) -> models.User:
         ):
             return db_user
     raise ValueError("Invalid credentials")
+
+def update_user_profile(db: Session, updates: schemas.UserUpdate, user_id: int) -> models.User:
+    if user := crud.get_user_by_id(db=db, user_id=user_id):
+        update_data = updates.model_dump(exclude_unset=True)
+        if "password" in update_data:
+            update_data["hashed_password"] = bcrypt.hashpw(
+                update_data.pop("password").encode("utf-8"), bcrypt.gensalt()
+            )
+        return crud.update_user(db=db, db_user=user, updates=update_data)
+    raise ValueError("User not found")
