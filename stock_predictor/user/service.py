@@ -20,7 +20,7 @@ def authenticate_user(db: Session, user: schemas.UserLogin) -> models.User:
     if db_user := crud.get_user_by_username(db=db, username=user.username):
         if bcrypt.checkpw(
             password=user.password.encode("utf-8"),
-            hashed_password=db_user.hashed_password,
+            hashed_password=db_user.hashed_password.encode("utf-8"),
         ):
             return db_user
     raise ValueError("Invalid credentials")
