@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 from stock_predictor.dependencies.database import get_db
 from stock_predictor.dependencies.auth import get_current_user
 from stock_predictor.user import schemas, service
+from stock_predictor.auth import jwt
 
 router = APIRouter()
 
@@ -27,7 +28,8 @@ async def signup(user: schemas.UserCreate, db: Session = Depends(get_db)):
 async def login(user: schemas.UserLogin, db: Session = Depends(get_db)):
     try:
         if service.authenticate_user(db=db, user=user):
-            return schemas.Token(access_token="placeholder", token_type="bearer")
+            access_token = jwt.create_access_token({"sub": user.username})
+            return schemas.Token(access_token=access_token, token_type="bearer")
     except ValueError as e:
         raise HTTPException(status_code=401, detail=str(e))
 
