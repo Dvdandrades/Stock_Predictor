@@ -1,6 +1,7 @@
 from pydantic import BaseModel, ConfigDict
 from datetime import date, time
 
+
 class StockData(BaseModel):
     symbol: str
     date_stamp: date
@@ -13,10 +14,12 @@ class StockData(BaseModel):
 
     model_config = ConfigDict(from_attributes=True)
 
+
 class StockPrediction(BaseModel):
     predicted_price: float
     symbol: str
     date_stamp: date
+
 
 class StockTrends(BaseModel):
     symbol: str

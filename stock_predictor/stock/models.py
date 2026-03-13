@@ -1,6 +1,7 @@
 from sqlalchemy import Integer, Time, Date, CHAR, DECIMAL, Column, PrimaryKeyConstraint
 from stock_predictor.database.session import Base
 
+
 class Stock(Base):
     __tablename__ = "stock"
 
