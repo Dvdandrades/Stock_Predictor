@@ -40,7 +40,7 @@ def predict_stock_price(
 
     X = df[["open", "high", "low", "volume", "SMA_20", "SMA_50"]]
     y = df["close"]
-    X_train, X_test, y_train, y_test = train_test_split(
+    X_train, X_test, y_train, _ = train_test_split(
         X, y, test_size=0.2, random_state=42, shuffle=False
     )
 
@@ -61,3 +61,37 @@ def predict_stock_price(
 
     prediction_adapter = TypeAdapter(list[schemas.StockPrediction])
     return prediction_adapter.validate_python(prediction_list)
+
+
+def get_stock_trends(stock_data: list[models.Stock]) -> schemas.StockTrends:
+    data = [
+        {
+            "symbol": obj.symbol,
+            "date_stamp": obj.date_stamp,
+            "close": obj.close,
+            "open": obj.open,
+            "high": obj.high,
+            "low": obj.low,
+            "volume": obj.volume,
+        }
+        for obj in stock_data
+    ]
+    df = pd.DataFrame(data)
+    df.dropna(inplace=True)
+
+    date_range_start = df["date_stamp"].min()
+    date_range_end = df["date_stamp"].max()
+    average_close_price = df["close"].mean()
+    average_volume = df["volume"].mean()
+    min_price_period = df["low"].min()
+    max_price_period = df["high"].max()
+
+    return {
+        "symbol": df["symbol"].iloc[0],
+        "date_range_start": date_range_start,
+        "date_range_end": date_range_end,
+        "average_close_price": average_close_price,
+        "average_volume": average_volume,
+        "min_price_period": min_price_period,
+        "max_price_period": max_price_period,
+    }
