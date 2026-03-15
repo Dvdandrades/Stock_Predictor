@@ -8,4 +8,4 @@ app = FastAPI()
 
 app.include_router(user_router.router, prefix="/user", tags=["user"])
 app.include_router(stock_router.router, prefix="/stock", tags=["stock"])
-app.include_router(feedback_router.router, prefix="/feedback", tags=["feedback"])
+app.include_router(feedback_router.router, tags=["feedback"])

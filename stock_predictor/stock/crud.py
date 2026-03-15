@@ -12,7 +12,7 @@ def create_stock_data(csv_file: list[schemas.StockData], db: Session) -> None:
 
 def get_stock_data(
     db: Session, symbol: str, date_start: date, date_end: date
-) -> models.Stock:
+) -> list[models.Stock]:
     return (
         db.query(models.Stock)
         .filter(
