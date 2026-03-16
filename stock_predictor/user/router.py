@@ -11,8 +11,6 @@ router = APIRouter()
 
 @router.get("/profile", status_code=200, response_model=schemas.UserBase)
 async def get_profile(current_user=Depends(get_current_user)):
-    if not current_user.is_active:
-        raise HTTPException(status_code=400, detail="Inactive User")
     return current_user
 
 
