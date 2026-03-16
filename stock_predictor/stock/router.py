@@ -30,11 +30,12 @@ async def get_predictions(
     current_user=Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    stock = crud.get_stock_data(
-        db=db, symbol=symbol, date_start=date_start, date_end=date_end
-    )
-    if not stock:
-        raise HTTPException(status_code=404, detail="No data available")
+    try:
+        stock = crud.get_stock_data(
+            db=db, symbol=symbol, date_start=date_start, date_end=date_end
+        )
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
     prediction = service.predict_stock_price(stock_data=stock)
     return prediction
 
@@ -47,11 +48,12 @@ async def get_trends(
     current_user=Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    stock = crud.get_stock_data(
-        db=db, symbol=symbol, date_start=date_start, date_end=date_end
-    )
-    if not stock:
-        raise HTTPException(status_code=404, detail="No data available")
+    try:
+        stock = crud.get_stock_data(
+            db=db, symbol=symbol, date_start=date_start, date_end=date_end
+        )
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
     trends = service.get_stock_trends(stock_data=stock)
     return trends
 
@@ -64,9 +66,10 @@ async def get_data(
     current_user=Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    stock = crud.get_stock_data(
-        db=db, symbol=symbol, date_start=date_start, date_end=date_end
-    )
-    if not stock:
-        raise HTTPException(status_code=404, detail="No data available")
+    try:
+        stock = crud.get_stock_data(
+            db=db, symbol=symbol, date_start=date_start, date_end=date_end
+        )
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
     return stock

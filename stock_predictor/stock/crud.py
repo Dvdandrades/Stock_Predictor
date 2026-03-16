@@ -13,7 +13,7 @@ def create_stock_data(csv_file: list[schemas.StockData], db: Session) -> None:
 def get_stock_data(
     db: Session, symbol: str, date_start: date, date_end: date
 ) -> list[models.Stock]:
-    return (
+    stock = (
         db.query(models.Stock)
         .filter(
             models.Stock.symbol == symbol,
@@ -22,3 +22,7 @@ def get_stock_data(
         )
         .all()
     )
+    if not stock:
+        raise ValueError("No data available")
+
+    return stock

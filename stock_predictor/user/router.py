@@ -38,8 +38,6 @@ async def update_profile(
     db: Session = Depends(get_db),
     current_user=Depends(get_current_user),
 ):
-    if not current_user.is_active:
-        raise HTTPException(status_code=400, detail="Inactive User")
     try:
         return service.update_user_profile(
             db=db, updates=updates, user_id=current_user.id
