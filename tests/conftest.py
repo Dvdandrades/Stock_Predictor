@@ -10,8 +10,14 @@ from stock_predictor.database.session import Base
 from main import app
 
 
-engine = create_engine("sqlite:///:memory:", connect_args={"check_same_thread": False}, poolclass=StaticPool ,echo=True)
-mock_session = sessionmaker(autocommit=False, autoflush=False,bind=engine)
+engine = create_engine(
+    "sqlite:///:memory:",
+    connect_args={"check_same_thread": False},
+    poolclass=StaticPool,
+    echo=True,
+)
+mock_session = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
 
 @pytest.fixture(autouse=True)
 def setup_database():
