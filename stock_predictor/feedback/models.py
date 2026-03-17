@@ -1,4 +1,4 @@
-from sqlalchemy import Integer, Date, CHAR, Column, String, ForeignKey, func
+from sqlalchemy import Integer, DateTime, CHAR, Column, String, ForeignKey, func
 from stock_predictor.database.session import Base
 
 
@@ -10,5 +10,5 @@ class Feedback(Base):
     user_id = Column(
         Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False
     )
-    created_at = Column(Date, server_default=func.now())
+    created_at = Column(DateTime, server_default=func.now())
     message = Column(String, nullable=False)

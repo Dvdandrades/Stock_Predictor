@@ -1,5 +1,5 @@
 from pydantic import BaseModel, ConfigDict
-from datetime import date
+from datetime import datetime
 
 
 class FeedbackBase(BaseModel):
@@ -10,6 +10,6 @@ class FeedbackBase(BaseModel):
 class FeedbackOutput(FeedbackBase):
     id: int
     user_id: int
-    created_at: date
+    created_at: datetime
 
     model_config = ConfigDict(from_attributes=True)
