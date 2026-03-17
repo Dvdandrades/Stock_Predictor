@@ -13,7 +13,7 @@ def test_signup(mock_client) -> None:
 
 
 def test_signup_error(mock_client) -> None:
-    response = mock_client.post(
+    mock_client.post(
         "/user/signup",
         json={"username": "foo", "email": "foo@foo.com", "password": "foopassword"},
     )
@@ -26,7 +26,7 @@ def test_signup_error(mock_client) -> None:
 
 
 def test_login(mock_client) -> None:
-    response = mock_client.post(
+    mock_client.post(
         "/user/signup",
         json={"username": "foo", "email": "foo@foo.com", "password": "foopassword"},
     )
@@ -41,7 +41,7 @@ def test_login(mock_client) -> None:
 
 
 def test_login_error(mock_client) -> None:
-    response = mock_client.post(
+    mock_client.post(
         "/user/signup",
         json={"username": "foo", "email": "foo@foo.com", "password": "foopassword"},
     )
@@ -54,17 +54,17 @@ def test_login_error(mock_client) -> None:
 
 
 def test_get_profile(mock_client) -> None:
-    response = mock_client.post(
+    mock_client.post(
         "/user/signup",
         json={"username": "foo", "email": "foo@foo.com", "password": "foopassword"},
     )
-    response = mock_client.post(
+    login_response = mock_client.post(
         "/user/login",
         json={"username": "foo", "password": "foopassword"},
     )
     response = mock_client.get(
         "/user/profile",
-        headers={"Authorization": f"Bearer {response.json()['access_token']}"},
+        headers={"Authorization": f"Bearer {login_response.json()['access_token']}"},
     )
     assert response.status_code == 200
     assert response.json() == {"username": "foo", "email": "foo@foo.com"}
@@ -77,11 +77,11 @@ def test_get_profile_error_token(mock_client) -> None:
 
 
 def test_get_profile_inactive_user(mock_client) -> None:
-    response = mock_client.post(
+    mock_client.post(
         "/user/signup",
         json={"username": "foo", "email": "foo@foo.com", "password": "foopassword"},
     )
-    response = mock_client.post(
+    login_response = mock_client.post(
         "/user/login",
         json={"username": "foo", "password": "foopassword"},
     )
@@ -92,18 +92,18 @@ def test_get_profile_inactive_user(mock_client) -> None:
     db.close()
     response = mock_client.get(
         "/user/profile",
-        headers={"Authorization": f"Bearer {response.json()['access_token']}"},
+        headers={"Authorization": f"Bearer {login_response.json()['access_token']}"},
     )
     assert response.status_code == 403
     assert response.json() == {"detail": "Inactive user"}
 
 
 def test_get_profile_user_not_found(mock_client) -> None:
-    response = mock_client.post(
+    mock_client.post(
         "/user/signup",
         json={"username": "foo", "email": "foo@foo.com", "password": "foopassword"},
     )
-    response = mock_client.post(
+    login_response = mock_client.post(
         "/user/login",
         json={"username": "foo", "password": "foopassword"},
     )
@@ -114,18 +114,18 @@ def test_get_profile_user_not_found(mock_client) -> None:
     db.close()
     response = mock_client.get(
         "/user/profile",
-        headers={"Authorization": f"Bearer {response.json()['access_token']}"},
+        headers={"Authorization": f"Bearer {login_response.json()['access_token']}"},
     )
     assert response.status_code == 401
     assert response.json() == {"detail": "User not found"}
 
 
 def test_update_profile(mock_client) -> None:
-    response = mock_client.post(
+    mock_client.post(
         "/user/signup",
         json={"username": "foo", "email": "foo@foo.com", "password": "foopassword"},
     )
-    response = mock_client.post(
+    login_response = mock_client.post(
         "/user/login",
         json={"username": "foo", "password": "foopassword"},
     )
@@ -136,7 +136,7 @@ def test_update_profile(mock_client) -> None:
             "email": "newfoo@foo.com",
             "password": "newfoopassword",
         },
-        headers={"Authorization": f"Bearer {response.json()['access_token']}"},
+        headers={"Authorization": f"Bearer {login_response.json()['access_token']}"},
     )
     data = response.json()
     assert response.status_code == 200

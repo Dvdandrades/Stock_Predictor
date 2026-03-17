@@ -1,11 +1,12 @@
 import pandas as pd
 
 from pydantic import TypeAdapter
-from fastapi import UploadFile
+from fastapi import UploadFile, HTTPException
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
 
 from stock_predictor.stock import schemas, models
+from stock_predictor.config.config import MIN_REQUIRED_SAMPLES
 
 
 def parse_csv(upload_file: UploadFile) -> list[schemas.StockData]:
@@ -18,6 +19,10 @@ def parse_csv(upload_file: UploadFile) -> list[schemas.StockData]:
 def predict_stock_price(
     stock_data: list[models.Stock],
 ) -> list[schemas.StockPrediction]:
+    if len(stock_data) < MIN_REQUIRED_SAMPLES:
+        raise HTTPException(
+            status_code=400, detail="Not enough data points to generate a prediction"
+        )
     data = [
         {
             "symbol": obj.symbol,
